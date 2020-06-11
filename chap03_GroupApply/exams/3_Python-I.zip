@@ -1,0 +1,101 @@
+'''
+문1) movie_rating.csv 파일을 대상으로 다음과 같이 단계별로 그룹화 하시오.
+   <단계1> 평가자(critic), 영화제목(title) -> 평점(rating) 그룹화    
+   <단계2> table 생성 -> 행 : critic, 열 : title, 셀 : 평점(rating) 합계          
+   
+ <<출력 결과>>
+         rating                                      
+title   Just My Lady Snakes Superman The Night You Me
+critic                                               
+Claudia     3.0  NaN    3.5      4.0       4.5    2.5
+Gene        1.5  3.0    3.5      5.0       3.0    3.5
+Jack        NaN  3.0    4.0      5.0       3.0    3.5
+Lisa        3.0  2.5    3.5      3.5       3.0    2.5
+Mick        2.0  3.0    4.0      3.0       3.0    2.0
+Toby        NaN  NaN    4.5      4.0       NaN    1.0    
+'''
+import pandas as pd
+
+rating = pd.read_csv('movie_rating.csv')
+print(rating.info())
+"""
+ #   Column  Non-Null Count  Dtype  
+---  ------  --------------  -----  
+ 0   critic  31 non-null     object 
+ 1   title   31 non-null     object 
+ 2   rating  31 non-null     float64
+ """
+rating.head()
+
+
+rating_grp = rating['rating'].groupby([rating['critic'], rating['title']])
+rating_grp.size()
+"""
+critic   title    
+Claudia  Just My      1
+         Snakes       1
+         Superman     1
+         The Night    1
+         You Me       1
+Gene     Just My      1
+         Lady         1
+         Snakes       1
+         Superman     1
+         The Night    1
+         You Me       1
+Jack     Lady         1
+         Snakes       1
+         Superman     1
+         The Night    1
+         You Me       1
+Lisa     Just My      1
+         Lady         1
+         Snakes       1
+         Superman     1
+         The Night    1
+         You Me       1
+Mick     Just My      1
+         Lady         1
+         Snakes       1
+         Superman     1
+         The Night    1
+         You Me       1
+Toby     Snakes       1
+         Superman     1
+         You Me       1
+"""
+
+# rating_2d = rating_grp.unstack()  : AttributeError: 'SeriesGroupBy' object has no attribute 'unstack'
+rating_grp.sum()
+rating_2d = rating_grp.sum().unstack()
+rating_2d
+
+
+"""[정답]
+title    Just My  Lady  Snakes  Superman  The Night  You Me
+critic                                                     
+Claudia      3.0   NaN     3.5       4.0        4.5     2.5
+Gene         1.5   3.0     3.5       5.0        3.0     3.5
+Jack         NaN   3.0     4.0       5.0        3.0     3.5
+Lisa         3.0   2.5     3.5       3.5        3.0     2.5
+Mick         2.0   3.0     4.0       3.0        3.0     2.0
+Toby         NaN   NaN     4.5       4.0        NaN     1.0
+"""
+
+
+ratingsample = rating.groupby(['critic', 'title'])
+ratingsample  # <pandas.core.groupby.generic.DataFrameGroupBy object at 0x000001D5B943C3C8>
+ratingsample.size()
+
+
+
+
+
+
+
+
+
+
+
+
+
